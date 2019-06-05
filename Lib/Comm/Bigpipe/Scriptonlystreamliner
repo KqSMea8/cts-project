@@ -1,0 +1,29 @@
+<?php 
+/**
+ * 流水线方式仅输出script
+ * 
+ * @author Rodin <luodan@staff.sina.com.cn>
+ * @package Swift
+ * @subpackage Bigpipe
+ */
+class Comm_Bigpipe_ScriptOnlyStreamlineRender extends Comm_Bigpipe_StreamlineRender{
+	
+	public function prepare(){
+		$tpl_engine = $this->get_template_engine();
+		self::assign_meta_chain_to_template($tpl_engine, is_array($this->pl->get_meta_data()) ? array($this->pl->get_meta_data()) : array());
+		$tpl_engine->display('include/config.html');
+	}
+	
+	protected function render_skeleton_pagelet(Comm_Bigpipe_Pagelet $pl){
+		//should NOT do anything here.
+	}
+	
+	protected function surround_with_script_tag($string){
+		return "<script>parent.STK && parent.STK.pageletM && parent.STK.pageletM.view({$string})</script>\n";
+	}
+	
+	public function closure(){
+		$this->render_defered_pagelets();
+		$this->process_exceptions();
+	}
+}
